@@ -1,12 +1,9 @@
 'use client'
+import { promotionsConst } from '@/utils/constant';
 import React, { useState } from 'react';
 
 const PromotionPage = () => {
-  const [promotions, setPromotions] = useState([
-    { id: 1, title: 'Special Student Discount', category: 'Flights', description: 'Get 20% off on all domestic flights. Limited time offer!'},
-    { id: 2, title: 'Weekend Getaway Deals', category: 'Packages', description: 'Explore weekend packages starting from $199. Book now!'},
-    // Add more promotions as needed
-  ]);
+  const [promotions, setPromotions] = useState([...promotionsConst]);
 
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');

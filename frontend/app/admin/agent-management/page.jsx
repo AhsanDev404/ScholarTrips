@@ -1,14 +1,11 @@
 'use client'
+import { initialAgents } from '@/utils/constant';
 import React, { useState } from 'react';
 
-const initialAds = [
-  { id: 1, name: 'Agent 1', description: 'Description for Agent 1', status: 'Active' },
-  { id: 2, name: 'Agent2', description: 'Description for Agent 2', status: 'Inactive' },
-  // ...more initial ads
-];
+
 
 const AgentManagementPage = () => {
-  const [ads, setAds] = useState(initialAds);
+  const [ads, setAds] = useState(initialAgents);
   const [newAdName, setNewAdName] = useState('');
   const [newAdDescription, setNewAdDescription] = useState('');
 

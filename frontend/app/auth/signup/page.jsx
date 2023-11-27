@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const schema = yup.object().shape({
   name: yup.string().required('Name is required'),
@@ -17,9 +18,13 @@ const SignupPage = () => {
     resolver: yupResolver(schema),
   });
 
+  const router = useRouter()
+
   const onSubmit = (data) => {
     // Handle signup logic here
     console.log(data);
+    router.push('/')
+
   };
 
   return (
@@ -75,9 +80,11 @@ const SignupPage = () => {
             />
             <span className="text-red-500">{errors.confirmPassword?.message}</span>
           </div>
+         
           <button type="submit" className="bg-black text-white p-2 rounded w-full my-5">
             Sign Up
-          </button>
+            </button>
+         
           <Link href={'/auth/login'}>
             <button type="button" className="bg-gray-400 text-black p-2 rounded w-full">
               Login

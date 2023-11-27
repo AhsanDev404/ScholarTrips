@@ -1,19 +1,26 @@
 'use client'
+import { flightsConst } from '@/utils/constant';
 import React, { useState } from 'react';
 
 const FlightsPage = () => {
   // Sample flight data (you can replace this with actual flight data from an API)
-  const [flights, setFlights] = useState([
-    { id: 1, airline: 'Sample Airlines', departure: 'New York', arrival: 'Los Angeles', departureTime: '09:00 AM', arrivalTime: '11:30 AM', price: '$150' },
-    { id: 2, airline: 'Travel Airways', departure: 'Chicago', arrival: 'Miami', departureTime: '10:30 AM', arrivalTime: '01:00 PM', price: '$180' },
-    // Add more flight data as needed
-  ]);
+  const [flights, setFlights] = useState([...flightsConst]);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('price'); // Default sorting by price
   const [pageNumber, setPageNumber] = useState(1);
   const flightsPerPage = 6; // Number of flights to display per page
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
+  // Rest of your code...
+
+  const handleBookNow = () => {
+    setShowConfirmation(true);
+  };
+
+  const handleConfirmationClose = () => {
+    setShowConfirmation(false);
+  };
   // Filtering flights based on search term
   const filteredFlights = flights.filter(flight =>
     flight.airline.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -77,7 +84,10 @@ const FlightsPage = () => {
               <p className="text-gray-700">Departure: {flight.departure} - Arrival: {flight.arrival}</p>
               <p className="text-gray-700">Departure Time: {flight.departureTime} - Arrival Time: {flight.arrivalTime}</p>
               <p className="text-green-500 font-semibold mt-2">{flight.price}</p>
-              <button className="bg-blue-500 text-white px-4 py-2 mt-4 rounded hover:bg-blue-700 transition duration-300">
+              <button
+                className="bg-blue-500 text-white px-4 py-2 mt-4 rounded hover:bg-blue-700 transition duration-300"
+                onClick={handleBookNow} // Call handleBookNow when the button is clicked
+              >
                 Book Now
               </button>
             </div>
@@ -98,8 +108,20 @@ const FlightsPage = () => {
         </div>
       </main>
 
-      {/* Footer Section (You can include a footer here if needed) */}
-      {/* ...Footer content... */}
+      {showConfirmation && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+          <div className="bg-white p-8 rounded shadow-md">
+            <p className="text-xl font-semibold mb-4">Booking Confirmation</p>
+            <p>Your booking has been confirmed!</p>
+            <button
+              className="bg-blue-500 text-white px-4 py-2 mt-4 rounded hover:bg-blue-700 transition duration-300"
+              onClick={handleConfirmationClose} // Call handleConfirmationClose to close the modal
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

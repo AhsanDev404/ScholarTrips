@@ -4,18 +4,7 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex">
       {/* Sidebar */}
-      <aside className="bg-gray-800 text-white w-64 py-8 flex-shrink-0">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold">Admin Dashboard</h2>
-        </div>
-        {/* Sidebar navigation links */}
-        <nav className="text-left">
-          <a href="#" className="block py-2 px-4 hover:bg-gray-700">Dashboard</a>
-          <a href="#" className="block py-2 px-4 hover:bg-gray-700">Users</a>
-          <a href="#" className="block py-2 px-4 hover:bg-gray-700">Products</a>
-          <a href="#" className="block py-2 px-4 hover:bg-gray-700">Settings</a>
-        </nav>
-      </aside>
+      
 
       {/* Main Content */}
       <main className="flex-1 p-8">
