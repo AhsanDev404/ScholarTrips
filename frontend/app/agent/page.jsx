@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import React from 'react';
 
 const AgentDashboard = () => {
@@ -23,18 +24,22 @@ const AgentDashboard = () => {
         {/* Quick Access Section */}
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Feature 1: Manage Ads */}
+          <Link href={'/agent/ads-management'}>
           <div className="bg-white p-6 rounded shadow-md">
             <h3 className="text-xl font-semibold mb-2">Manage Ads</h3>
             <p className="text-gray-700">View, edit, and create new ads for your clients.</p>
             {/* Add link/button to navigate to the ads management page */}
           </div>
+          </Link>
 
           {/* Feature 2: Reports */}
+          <Link href={'/agent/report-management'}>
           <div className="bg-white p-6 rounded shadow-md">
             <h3 className="text-xl font-semibold mb-2">Reports</h3>
             <p className="text-gray-700">Access performance reports and analytics.</p>
             {/* Add link/button to navigate to the reports page */}
           </div>
+          </Link>
 
           {/* Feature 3: Support */}
           <div className="bg-white p-6 rounded shadow-md">

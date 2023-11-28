@@ -1,43 +1,103 @@
-'use client'
-import { initialAds } from '@/utils/constant';
-import React, { useState } from 'react';
+"use client";
+import { initialUsers } from "@/utils/constant";
+import React, { useState } from "react";
 
+const NewUserModal = ({ isOpen, onClose, onSubmit }) => {
+  const [newUserName, setNewUserName] = useState('');
+  const [newUserDescription, setNewUserDescription] = useState('');
 
-const AgentManagementPage = () => {
-  const [ads, setAds] = useState(initialAds);
-  const [newAdName, setNewAdName] = useState('');
-  const [newAdDescription, setNewAdDescription] = useState('');
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(newUserName, newUserDescription);
+    setNewUserName('');
+    setNewUserDescription('');
+    onClose();
+  };
+
+  return (
+    <div className={`modal ${isOpen ? "block" : "hidden"}`}>
+      <div className="modal-content">
+        <span className="close" onClick={onClose}>
+          &times;
+        </span>
+        <h2>Create New User</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label
+              htmlFor="userName"
+              className="block text-sm font-medium text-gray-600"
+            >
+              User Name
+            </label>
+            <input
+              type="text"
+              id="userName"
+              className="mt-1 p-2 w-full border rounded-md"
+              value={newUserName}
+              onChange={(e) => setNewUserName(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="userDescription"
+              className="block text-sm font-medium text-gray-600"
+            >
+              User Description
+            </label>
+            <textarea
+              id="userDescription"
+              className="mt-1 p-2 w-full border rounded-md"
+              value={newUserDescription}
+              onChange={(e) => setNewUserDescription(e.target.value)}
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className="bg-black text-white p-2 rounded w-full"
+          >
+            Create User
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+const UserManagementPage = () => {
+  const [users, setUsers] = useState([...initialUsers]); // State for users
+  const [newUserName, setNewUserName] = useState(''); // State for new user name
+  const [newUserDescription, setNewUserDescription] = useState(''); // State for new user description
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
 
   const handleStatusChange = (id) => {
-    setAds((prevAds) =>
-      prevAds.map((ad) =>
-        ad.id === id ? { ...ad, status: ad.status === 'Active' ? 'Inactive' : 'Active' } : ad
+    setUsers((prevUsers) =>
+      prevUsers.map((user) =>
+        user.id === id ? { ...user, status: user.status === 'Active' ? 'Inactive' : 'Active' } : user
       )
     );
   };
 
-  const handleEditAd = (id) => {
-    console.log(`Edit Ad with ID: ${id}`);
-    // Logic to edit the ad with the given ID (redirect to edit page or show a modal, etc.)
+  const handleEditUser = (id) => {
+    console.log(`Edit User with ID: ${id}`);
+    // Logic to edit the user with the given ID (redirect to edit page or show a modal, etc.)
   };
 
-  const handleNewAdSubmit = (e) => {
-    e.preventDefault();
-    const newAd = {
-      id: ads.length + 1,
-      name: newAdName,
-      description: newAdDescription,
-      status: 'Active', // New ads are set to 'Active' by default
+  const handleNewUserSubmit = (name, description) => {
+    const newUser = {
+      id: users.length + 1,
+      name,
+      description,
+      status: 'Active', // New users are set to 'Active' by default
     };
-    setAds([...ads, newAd]);
-    setNewAdName('');
-    setNewAdDescription('');
+    setUsers([...users, newUser]);
   };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded shadow-md my-10 mb-8 w-full">
-        <h2 className="text-2xl font-bold mb-4">Ads Management</h2>
+        <h2 className="text-2xl font-bold mb-4">User Management</h2>
         <table className="w-full mb-4">
           <thead>
             <tr>
@@ -49,64 +109,36 @@ const AgentManagementPage = () => {
             </tr>
           </thead>
           <tbody>
-            {ads.map((ad) => (
-              <tr key={ad.id}>
-                <td className="border p-2">{ad.id}</td>
-                <td className="border p-2">{ad.name}</td>
-                <td className="border p-2">{ad.description}</td>
-                <td className="border p-2">{ad.status}</td>
+            {users.map((user) => (
+              <tr key={user.id}>
+                <td className="border p-2">{user.id}</td>
+                <td className="border p-2">{user.name}</td>
+                <td className="border p-2">{user.description}</td>
+                <td className="border p-2">{user.status}</td>
                 <td className="border p-2 flex justify-around">
-                  <button onClick={() => handleStatusChange(ad.id)}>
-                    {ad.status === 'Active' ? 'Deactivate' : 'Activate'}
+                  <button onClick={() => handleStatusChange(user.id)}>
+                    {user.status === "Active" ? "Deactivate" : "Activate"}
                   </button>
-                  <button onClick={() => handleEditAd(ad.id)}>Edit</button>
+                  <button onClick={() => handleEditUser(user.id)}>Edit</button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-        <button onClick={() => handleEditAd(null)} className="bg-black text-white p-2 rounded w-full">
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="bg-black text-white p-2 rounded w-full"
+        >
           Create New User
         </button>
       </div>
-      {/* Add/Edit Ad Form */}
-      {newAdName !== '' && newAdDescription !== '' && (
-        <div className="bg-white p-8 rounded shadow-md w-96">
-          <h2 className="text-2xl font-bold mb-4">Create New Ad</h2>
-          <form onSubmit={handleNewAdSubmit}>
-            <div className="mb-4">
-              <label htmlFor="newAdName" className="block text-sm font-medium text-gray-600">
-              User Name
-              </label>
-              <input
-                type="text"
-                id="newAdName"
-                className="mt-1 p-2 w-full border rounded-md"
-                value={newAdName}
-                onChange={(e) => setNewAdName(e.target.value)}
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="newAdDescription" className="block text-sm font-medium text-gray-600">
-              User Description
-              </label>
-              <textarea
-                id="newAdDescription"
-                className="mt-1 p-2 w-full border rounded-md"
-                value={newAdDescription}
-                onChange={(e) => setNewAdDescription(e.target.value)}
-                required
-              />
-            </div>
-            <button type="submit" className="bg-black text-white p-2 rounded w-full">
-              Create User
-            </button>
-          </form>
-        </div>
-      )}
+      <NewUserModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleNewUserSubmit}
+      />  
     </div>
   );
 };
 
-export default AgentManagementPage;
+export default UserManagementPage;

@@ -2,41 +2,83 @@
 import { initialAdds } from '@/utils/constant';
 import React, { useState } from 'react';
 
+const NewAdModal = ({ isOpen, onClose, onSubmit }) => {
+  const [newAdName, setNewAdName] = useState('');
+  const [newAdDescription, setNewAdDescription] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(newAdName, newAdDescription);
+    setNewAdName('');
+    setNewAdDescription('');
+    onClose();
+  };
+
+  return (
+    <div className={`modal ${isOpen ? 'block' : 'hidden'}`}>
+      <div className="modal-content">
+        <span className="close" onClick={onClose}>&times;</span>
+        <h2>Create New Ad</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label htmlFor="adName" className="block text-sm font-medium text-gray-600">
+              Ad Name
+            </label>
+            <input
+              type="text"
+              id="adName"
+              className="mt-1 p-2 w-full border rounded-md"
+              value={newAdName}
+              onChange={(e) => setNewAdName(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label htmlFor="adDescription" className="block text-sm font-medium text-gray-600">
+              Ad Description
+            </label>
+            <textarea
+              id="adDescription"
+              className="mt-1 p-2 w-full border rounded-md"
+              value={newAdDescription}
+              onChange={(e) => setNewAdDescription(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit" className="bg-black text-white p-2 rounded w-full">
+            Create Ad
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
 
 
 const AddManagementPage = () => {
   const [ads, setAds] = useState(initialAdds);
   const [newAdName, setNewAdName] = useState('');
   const [newAdDescription, setNewAdDescription] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleStatusChange = (id) => {
-    // Logic to change the status of the ad with the given id (e.g., toggle between 'Active' and 'Inactive')
-    setAds((prevAds) =>
-      prevAds.map((ad) =>
-        ad.id === id ? { ...ad, status: ad.status === 'Active' ? 'Inactive' : 'Active' } : ad
-      )
-    );
+  const handleNewAdSubmit = (name, description) => {
+    const newAd = {
+      id: ads.length + 1,
+      name,
+      description,
+      status: 'Active',
+    };
+    setAds([...ads, newAd]);
   };
+
 
   const handleEditAd = (id) => {
     // Logic to edit the ad with the given id (redirect to edit page or show a modal, etc.)
     console.log(`Edit Ad with ID: ${id}`);
   };
 
-  const handleNewAdSubmit = (e) => {
-    e.preventDefault();
-    // Logic to add a new ad to the ads list
-    const newAd = {
-      id: ads.length + 1,
-      name: newAdName,
-      description: newAdDescription,
-      status: 'Active', // New ads are set to 'Active' by default
-    };
-    setAds([...ads, newAd]);
-    // Clear form fields
-    setNewAdName('');
-    setNewAdDescription('');
-  };
+  
 
   return (
     <div className="min-h-screen  flex justify-center items-center  bg-gray-100">
@@ -69,46 +111,18 @@ const AddManagementPage = () => {
             ))}
           </tbody>
         </table>
-        <button onClick={() => handleEditAd(null)} className="bg-black text-white p-2 rounded w-full">
-          Create New Ad
-        </button>
+        <button onClick={() => setIsModalOpen(true)} className="bg-black text-white p-2 rounded w-full">
+        Create New Ad
+      </button>
+      <NewAdModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleNewAdSubmit}
+      />
       </div>
       {/* Add/Edit Ad Form */}
-      {newAdName !== '' && newAdDescription !== '' && (
-        <div className="bg-white p-8 rounded shadow-md w-96">
-          <h2 className="text-2xl font-bold mb-4">Create New Ad</h2>
-          <form onSubmit={handleNewAdSubmit}>
-            <div className="mb-4">
-              <label htmlFor="newAdName" className="block text-sm font-medium text-gray-600">
-                Ad Name
-              </label>
-              <input
-                type="text"
-                id="newAdName"
-                className="mt-1 p-2 w-full border rounded-md"
-                value={newAdName}
-                onChange={(e) => setNewAdName(e.target.value)}
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="newAdDescription" className="block text-sm font-medium text-gray-600">
-                Ad Description
-              </label>
-              <textarea
-                id="newAdDescription"
-                className="mt-1 p-2 w-full border rounded-md"
-                value={newAdDescription}
-                onChange={(e) => setNewAdDescription(e.target.value)}
-                required
-              />
-            </div>
-            <button type="submit" className="bg-black text-white p-2 rounded w-full">
-              Create Ad
-            </button>
-          </form>
-        </div>
-      )}
+      
+     
     </div>
   );
 };

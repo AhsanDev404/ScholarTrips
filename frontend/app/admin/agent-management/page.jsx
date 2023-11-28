@@ -1,38 +1,102 @@
-'use client'
-import { initialAgents } from '@/utils/constant';
-import React, { useState } from 'react';
+"use client";
+import { initialAgents } from "@/utils/constant";
+import React, { useState } from "react";
 
+const NewAgentModal = ({ isOpen, onClose, onSubmit }) => {
+  const [newAgentName, setNewAgentName] = useState("");
+  const [newAgentDescription, setNewAgentDescription] = useState("");
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(newAgentName, newAgentDescription);
+    setNewAgentName("");
+    setNewAgentDescription("");
+    onClose();
+  };
+
+  return (
+    <div className={`modal ${isOpen ? "block" : "hidden"}`}>
+      <div className="modal-content">
+        <span className="close" onClick={onClose}>
+          &times;
+        </span>
+        <h2>Create New Agent</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label
+              htmlFor="agentName"
+              className="block text-sm font-medium text-gray-600"
+            >
+              Agent Name
+            </label>
+            <input
+              type="text"
+              id="agentName"
+              className="mt-1 p-2 w-full border rounded-md"
+              value={newAgentName}
+              onChange={(e) => setNewAgentName(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="agentDescription"
+              className="block text-sm font-medium text-gray-600"
+            >
+              Agent Description
+            </label>
+            <textarea
+              id="agentDescription"
+              className="mt-1 p-2 w-full border rounded-md"
+              value={newAgentDescription}
+              onChange={(e) => setNewAgentDescription(e.target.value)}
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className="bg-black text-white p-2 rounded w-full"
+          >
+            Create Agent
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
 
 const AgentManagementPage = () => {
-  const [ads, setAds] = useState(initialAgents);
-  const [newAdName, setNewAdName] = useState('');
-  const [newAdDescription, setNewAdDescription] = useState('');
+  const [agents, setAgents] = useState(initialAgents);
+  const [newAgentName, setNewAgentName] = useState("");
+  const [newAgentDescription, setNewAgentDescription] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleStatusChange = (id) => {
-    setAds((prevAds) =>
-      prevAds.map((ad) =>
-        ad.id === id ? { ...ad, status: ad.status === 'Active' ? 'Inactive' : 'Active' } : ad
+    setAgents((prevAgents) =>
+      prevAgents.map((agent) =>
+        agent.id === id
+          ? {
+              ...agent,
+              status: agent.status === "Active" ? "Inactive" : "Active",
+            }
+          : agent
       )
     );
   };
 
-  const handleEditAd = (id) => {
-    console.log(`Edit Ad with ID: ${id}`);
-    // Logic to edit the ad with the given ID (redirect to edit page or show a modal, etc.)
+  const handleEditAgent = (id) => {
+    console.log(`Edit Agent with ID: ${id}`);
+    // Logic to edit the agent with the given ID (redirect to edit page or show a modal, etc.)
   };
 
-  const handleNewAdSubmit = (e) => {
-    e.preventDefault();
-    const newAd = {
-      id: ads.length + 1,
-      name: newAdName,
-      description: newAdDescription,
-      status: 'Active', // New ads are set to 'Active' by default
+  const handleNewAgentSubmit = (name, description) => {
+    const newAgent = {
+      id: agents.length + 1,
+      name,
+      description,
+      status: "Active", // New agents are set to 'Active' by default
     };
-    setAds([...ads, newAd]);
-    setNewAdName('');
-    setNewAdDescription('');
+    setAgents([...agents, newAgent]);
   };
 
   return (
@@ -50,7 +114,7 @@ const AgentManagementPage = () => {
             </tr>
           </thead>
           <tbody>
-            {ads.map((ad) => (
+            {agents.map((ad) => (
               <tr key={ad.id}>
                 <td className="border p-2">{ad.id}</td>
                 <td className="border p-2">{ad.name}</td>
@@ -58,7 +122,7 @@ const AgentManagementPage = () => {
                 <td className="border p-2">{ad.status}</td>
                 <td className="border p-2 flex justify-around">
                   <button onClick={() => handleStatusChange(ad.id)}>
-                    {ad.status === 'Active' ? 'Deactivate' : 'Activate'}
+                    {ad.status === "Active" ? "Deactivate" : "Activate"}
                   </button>
                   <button onClick={() => handleEditAd(ad.id)}>Edit</button>
                 </td>
@@ -66,46 +130,20 @@ const AgentManagementPage = () => {
             ))}
           </tbody>
         </table>
-        <button onClick={() => handleEditAd(null)} className="bg-black text-white p-2 rounded w-full">
+        <button
+          onClick={() => handleEditAd(null)}
+          className="bg-black text-white p-2 rounded w-full"
+        >
           Create New Agent
         </button>
       </div>
-      {/* Add/Edit Ad Form */}
-      {newAdName !== '' && newAdDescription !== '' && (
-        <div className="bg-white p-8 rounded shadow-md w-96">
-          <h2 className="text-2xl font-bold mb-4">Create New Ad</h2>
-          <form onSubmit={handleNewAdSubmit}>
-            <div className="mb-4">
-              <label htmlFor="newAdName" className="block text-sm font-medium text-gray-600">
-              Agent Name
-              </label>
-              <input
-                type="text"
-                id="newAdName"
-                className="mt-1 p-2 w-full border rounded-md"
-                value={newAdName}
-                onChange={(e) => setNewAdName(e.target.value)}
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="newAdDescription" className="block text-sm font-medium text-gray-600">
-              Agent Description
-              </label>
-              <textarea
-                id="newAdDescription"
-                className="mt-1 p-2 w-full border rounded-md"
-                value={newAdDescription}
-                onChange={(e) => setNewAdDescription(e.target.value)}
-                required
-              />
-            </div>
-            <button type="submit" className="bg-black text-white p-2 rounded w-full">
-              Create Agent
-            </button>
-          </form>
-        </div>
-      )}
+     
+
+      <NewAgentModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleNewAgentSubmit}
+      />
     </div>
   );
 };
